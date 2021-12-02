@@ -19,7 +19,7 @@ app.listen(port, () => {
 
 app.get('/api/v1/listUsers', function (req, res) {
     fs.readFile(__dirname + "/data/" + "users.json", 'utf8', function (err, data) {
-        console.log(req);
+        console.log(data);
         res.end(data);
     });
 });
@@ -42,18 +42,27 @@ app.delete('/api/v1/deleteUser', function (req, res) {
 app.post('/api/v1/addUser', function(req,res){
 
     fs.readFile(__dirname + "/data/" + "users.json", 'utf8', function (err, data) {
-        
+        var jsondata = JSON.parse(data);
+        // add data to json
+        jsondata.push({name: req.name, password:req.password, profession:req.profession, id:data.id})
+        var newjson = JSON.stringifgy(data);
+        // write back to json
+        fs.writeFile(__dirname + "/data/" + "users.json", newjson, 'utf8', callback)
+    });
+});
+
+
+app.post('/api/v1/filterUser', function(req,res){
+
+    fs.readFile(__dirname + "/data/" + "users.json", 'utf8', function (err, data) {
         data = JSON.parse(data);
-
-        fs.writeFile(__dirname + "/data/users.json", data, err => {
-
+        user =  data["user" + req.query["id"]];
+        fs.writeFile(__dirname + "/data/users.json", JSON.stringify(data), err => {
             if (err) {
                 console.error(err); return;
             }
         });
-
-        res.end(data);
+        console.log(data);
+        res.end(JSON.stringify(data));
     });
-
-
 });

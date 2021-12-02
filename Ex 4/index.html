@@ -65,7 +65,7 @@
         })
         $('#filterButton').click(function () {
             $.ajax({
-                url: '/api/v1/' + document.getElementById("filterUserNum").value, type: 'GET',
+                url: '/api/v1/filterUsers?id=' + document.getElementById("filterUserNum").value, type: 'GET',
                 success: function (result) {
                     console.log("Filter Returned");
                     document.getElementById("users").innerHTML = "<pre>" + JSON.stringify(JSON.parse(result), null, 2) + "</pre>";
@@ -74,7 +74,7 @@
         })
         $('#addButton').click(function () {
             $.ajax({
-                url: "/api/v1/addUser?user=" + document.getElementById("addUserId").value + "&name=" + document.getElementById("addUserName").value
+                url: "/api/v1/addUser?&id=" + document.getElementById("addUserId").value + "&name=" + document.getElementById("addUserName").value
                     + "&password=" + document.getElementById("addUserPassword").value
                     + "&profession=" + document.getElementById("addUserProfession").value,
                 type: 'POST',
