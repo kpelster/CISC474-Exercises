@@ -16,5 +16,11 @@
         "password": "password3",
         "profession": "House Cat",
         "id": 3
+    },
+    "user4": {
+        "name": "Kara",
+        "password": "password",
+        "profession": "student",
+        "id": "4"
     }
 }

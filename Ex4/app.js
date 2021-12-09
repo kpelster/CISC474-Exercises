@@ -42,13 +42,63 @@ app.delete('/api/v1/deleteUser', function (req, res) {
 app.post('/api/v1/addUser', function(req,res){
 
     fs.readFile(__dirname + "/data/" + "users.json", 'utf8', function (err, data) {
+        // parse current data
         var jsondata = JSON.parse(data);
+        // get length of data
+        let length = Object.keys(jsondata).length + 1;
+
         // add data to json
-        jsondata.push({name: req.name, password:req.password, profession:req.profession, id:data.id})
-        var newjson = JSON.stringifgy(data);
+        let name = req.query["name"];
+        let password = req.query["password"];
+        let profession = req.query["profession"];
+        let id = req.query["id"];
+
+        // create new user data
+        let newUserData = {
+            "name" : name, 
+            "password" : password, 
+            "profession" : profession, 
+            "id": id
+        }
+
+        // create key for user
+        let newUserName = "user" + length.toString();
+
+        // add entry to json file
+        jsondata[newUserName] = newUserData
+
         // write back to json
-        fs.writeFile(__dirname + "/data/" + "users.json", newjson, 'utf8', callback)
+        fs.writeFile(__dirname + "/data/users.json", JSON.stringify(jsondata), err => {
+            if (err) {
+                console.error(err); return;
+            }
+        });
+        res.end(JSON.stringify(jsondata));
     });
+});
+
+
+app.post('/api/v1/signin', async function (req, res) {
+    //Check if uid exists in database
+    //if it doesnt add uid and username with uid as key to all other info
+    //Get game data
+    let uid = req.query["uid"];
+    let username = req.query["username"];
+
+    let usersUidRef = rtdb.child(userRef, String(uid));
+    let newUser = {
+        "username": username
+    }
+    rtdb.update(usersUidRef, newUser);
+
+    let mapRef = rtdb.ref(db, "Users/" + String(uid) + "/Maps");
+    let maps = {};
+    rtdb.get(mapRef).then(ss => {
+        ss.forEach(map => {
+            maps[map.key] = map.val();
+        })
+        res.end(JSON.stringify(maps));
+    })
 });
 
 
