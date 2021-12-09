@@ -102,17 +102,25 @@ app.post('/api/v1/signin', async function (req, res) {
 });
 
 
-app.post('/api/v1/filterUser', function(req,res){
+app.get('/api/v1/filterUsers', function(req,res){
 
     fs.readFile(__dirname + "/data/" + "users.json", 'utf8', function (err, data) {
-        data = JSON.parse(data);
-        user =  data["user" + req.query["id"]];
-        fs.writeFile(__dirname + "/data/users.json", JSON.stringify(data), err => {
-            if (err) {
-                console.error(err); return;
+        console.log("HEHEHEHEHEH");
+        console.log(data);
+        let id = req.query["id"]
+        data= JSON.parse(data);
+
+        let filteredData = [];
+
+        Object.keys(data).forEach(function(key) {
+            console.log(key, data[key]);
+            if(data[key].id == id){
+                filteredData.push(data[key])
             }
         });
-        console.log(data);
-        res.end(JSON.stringify(data));
+
+        console.log(filteredData);
+        res.end(JSON.stringify(filteredData));
+        
     });
 });
